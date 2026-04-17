@@ -1,5 +1,6 @@
 import { AddHabitComponent, HabitListComponent } from "@clean-streak/ui";
 
+// Phase 1: Initial component structure setup
 const habits = [
     { id: "1", name: "Workout", streak: 4 },
     { id: "2", name: "Study", streak: 7 },
