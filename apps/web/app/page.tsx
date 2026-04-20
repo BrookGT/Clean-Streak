@@ -11,7 +11,7 @@ type Habit = {
 };
 
 const initialHabits: Habit[] = [
-    { id: "1", name: "Workout", streak: 4 },
+    { id: "1", name: "Workout", streak: 5 },
     { id: "2", name: "Study", streak: 7 },
     { id: "3", name: "Read", streak: 3 },
 ];
