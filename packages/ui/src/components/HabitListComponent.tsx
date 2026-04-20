@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { HabitComponent } from "./HabitComponent";
 
 type Habit = {
@@ -13,7 +12,7 @@ type HabitListComponentProps = {
 
 export function HabitListComponent({ habits }: HabitListComponentProps) {
     return (
-        <ul style={styles.list}>
+        <ul className="cs-habit-list">
             {habits.map((habit) => (
                 <HabitComponent
                     key={habit.id}
@@ -24,13 +23,3 @@ export function HabitListComponent({ habits }: HabitListComponentProps) {
         </ul>
     );
 }
-
-const styles: Record<string, CSSProperties> = {
-    list: {
-        listStyle: "none",
-        margin: 0,
-        padding: 0,
-        display: "grid",
-        gap: "10px",
-    },
-};

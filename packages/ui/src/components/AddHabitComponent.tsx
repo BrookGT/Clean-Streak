@@ -1,38 +1,43 @@
-import type { CSSProperties } from "react";
+import { useState } from "react";
 
-export function AddHabitComponent() {
+type AddHabitComponentProps = {
+    onAddHabit: (habitName: string) => void;
+};
+
+export function AddHabitComponent({ onAddHabit }: AddHabitComponentProps) {
+    const [habitName, setHabitName] = useState("");
+
+    const handleAddHabit = () => {
+        const trimmedName = habitName.trim();
+        if (!trimmedName) {
+            return;
+        }
+
+        onAddHabit(trimmedName);
+        setHabitName("");
+    };
+
     return (
-        <div style={styles.wrapper}>
+        <div className="cs-add-habit">
             <input
                 type="text"
                 placeholder="Add a habit..."
-                style={styles.input}
+                className="cs-add-habit__input"
+                value={habitName}
+                onChange={(event) => setHabitName(event.target.value)}
+                onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                        handleAddHabit();
+                    }
+                }}
             />
-            <button type="button" style={styles.button}>
+            <button
+                type="button"
+                className="cs-add-habit__button"
+                onClick={handleAddHabit}
+            >
                 Add
             </button>
         </div>
     );
 }
-
-const styles: Record<string, CSSProperties> = {
-    wrapper: {
-        display: "flex",
-        gap: "8px",
-        marginBottom: "16px",
-    },
-    input: {
-        flex: 1,
-        border: "1px solid #d1d5db",
-        borderRadius: "8px",
-        padding: "10px 12px",
-    },
-    button: {
-        border: "none",
-        borderRadius: "8px",
-        padding: "10px 14px",
-        backgroundColor: "#2563eb",
-        color: "#ffffff",
-        cursor: "pointer",
-    },
-};
