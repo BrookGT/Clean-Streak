@@ -24,6 +24,20 @@ export default function HomePage() {
         if (storedHabits.length > 0) {
             setHabits(storedHabits);
         }
+
+        // subscribe to habit updates via the observer (optional)
+        const observer = (storageService as any).habitObserver;
+        if (observer && typeof observer.subscribe === "function") {
+            const onHabitsChanged = (data: Habit[]) => {
+                // simple reaction: log the updated habits
+                // in a fuller app you could trigger additional UI updates here
+                // eslint-disable-next-line no-console
+                console.log("habitObserver: habits updated", data);
+            };
+
+            observer.subscribe(onHabitsChanged);
+            return () => observer.unsubscribe(onHabitsChanged);
+        }
     }, []);
 
     const handleAddHabit = (habitName: string) => {

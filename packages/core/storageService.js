@@ -26,6 +26,18 @@ class StorageService {
         }
 
         window.localStorage.setItem(this.storageKey, JSON.stringify(habits));
+        try {
+            // notify observers about the updated habits list
+            // require here to avoid potential circular import issues at module load
+            const habitObserver = require("./habitObserver");
+            if (habitObserver && typeof habitObserver.notify === "function") {
+                habitObserver.notify(habits);
+            }
+        } catch (e) {
+            // fail silently - storage should not crash app
+            // eslint-disable-next-line no-console
+            console.error("Failed to notify habit observers", e);
+        }
     }
 }
 
