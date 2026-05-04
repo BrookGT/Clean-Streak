@@ -19,18 +19,19 @@ const initialHabits: Habit[] = [
 export default function HomePage() {
     const [habits, setHabits] = useState<Habit[]>(initialHabits);
 
+    const observer = storageService.habitObserver;
+    const habitUtils = storageService.habitUtils;
+
     useEffect(() => {
         const storedHabits = storageService.loadHabits();
         if (storedHabits.length > 0) {
             setHabits(storedHabits);
         }
 
-        // subscribe to habit updates via the observer (optional)
-        const observer = (storageService as any).habitObserver;
+        // Observer flow: app subscribes once and reacts to updates.
         if (observer && typeof observer.subscribe === "function") {
             const onHabitsChanged = (data: Habit[]) => {
-                // simple reaction: log the updated habits
-                // in a fuller app you could trigger additional UI updates here
+                // Simulation log: proves observer receives updates.
                 // eslint-disable-next-line no-console
                 console.log("habitObserver: habits updated", data);
             };
@@ -41,15 +42,31 @@ export default function HomePage() {
     }, []);
 
     const handleAddHabit = (habitName: string) => {
-        const newHabit: Habit = {
-            id: crypto.randomUUID(),
-            name: habitName,
-            streak: 0,
-        };
+        const isValidHabitName = habitUtils
+            ? habitUtils.validateHabit(habitName)
+            : habitName.trim().length > 0;
+
+        if (!isValidHabitName) {
+            return;
+        }
+
+        const newHabit: Habit = habitUtils
+            ? habitUtils.createHabit(habitName)
+            : {
+                  id: crypto.randomUUID(),
+                  name: habitName.trim(),
+                  streak: 0,
+              };
 
         const updatedHabits = [...habits, newHabit];
         setHabits(updatedHabits);
+
+        // Data flow: app state update -> storage save -> observer notify.
         storageService.saveHabits(updatedHabits);
+
+        // Simulation log: confirms add flow at app layer.
+        // eslint-disable-next-line no-console
+        console.log("[App] Habit added", newHabit);
     };
 
     const totalHabits = habits.length;

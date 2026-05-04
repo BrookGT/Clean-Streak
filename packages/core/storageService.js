@@ -1,3 +1,5 @@
+const habitObserver = require("./habitObserver");
+
 class StorageService {
     constructor() {
         this.storageKey = "clean-streak-habits";
@@ -8,13 +10,13 @@ class StorageService {
             return [];
         }
 
-        const rawHabits = window.localStorage.getItem(this.storageKey);
-        if (!rawHabits) {
+        const serializedHabits = window.localStorage.getItem(this.storageKey);
+        if (!serializedHabits) {
             return [];
         }
 
         try {
-            return JSON.parse(rawHabits);
+            return JSON.parse(serializedHabits);
         } catch {
             return [];
         }
@@ -26,21 +28,17 @@ class StorageService {
         }
 
         window.localStorage.setItem(this.storageKey, JSON.stringify(habits));
-        try {
-            // notify observers about the updated habits list
-            // require here to avoid potential circular import issues at module load
-            const habitObserver = require("./habitObserver");
-            if (habitObserver && typeof habitObserver.notify === "function") {
-                habitObserver.notify(habits);
-            }
-        } catch (e) {
-            // fail silently - storage should not crash app
-            // eslint-disable-next-line no-console
-            console.error("Failed to notify habit observers", e);
-        }
+
+        // Observer flow: when storage is updated, notify listeners.
+        habitObserver.notify(habits);
+
+        // Simulation log: confirms persistence step happened.
+        // eslint-disable-next-line no-console
+        console.log("[StorageService] Habits saved", habits);
     }
 }
 
+// Singleton usage: this single instance is shared app-wide.
 const storageService = new StorageService();
 
 module.exports = storageService;

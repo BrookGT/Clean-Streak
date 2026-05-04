@@ -12,6 +12,10 @@ declare const storageService: {
         unsubscribe: (cb: (data: Habit[]) => void) => void;
         notify: (data: Habit[]) => void;
     };
+    habitUtils?: {
+        validateHabit: (name: string) => boolean;
+        createHabit: (name: string) => Habit;
+    };
 };
 
 export = storageService;

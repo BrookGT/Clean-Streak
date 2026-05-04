@@ -1,10 +1,9 @@
 const storageService = require("./storageService");
+const habitObserver = require("./habitObserver");
+const habitUtils = require("./habitUtils");
 
-// attach habitObserver for convenient access from the package import
-try {
-    storageService.habitObserver = require("./habitObserver");
-} catch (e) {
-    // ignore if habitObserver is not available
-}
+// Keep a service-first export shape while exposing related helpers.
+storageService.habitObserver = habitObserver;
+storageService.habitUtils = habitUtils;
 
 module.exports = storageService;
